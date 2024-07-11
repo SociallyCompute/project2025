@@ -66,13 +66,16 @@ def visualize_sentiment(sentiment_scores, output_image_path):
 
     plt.figure(figsize=(10, 5))
     plt.plot(sections, sentiment_scores, marker='o')
-    plt.title('Sentiment Analysis of Project 2025\'s Giant 900+ Page Treatise')
+    plt.title('Sentiment Analysis of Project 2025\'s Giant Blob of Sinister by Section')
     plt.xlabel('Section')
     plt.ylabel('Sentiment Score')
     plt.grid(True)
-    
-    plt.savefig(output_image_path)
 
+    # Add a caption below the plot
+    caption = "Figure 1: Sentiment analysis scores for each section of the document. Notice that the document begins with positive sentiment. This fishes the reader in, makes them feel ok. People like happy. Then they drop the hammer of fear and hate."
+    plt.figtext(0.5, -0.1, caption, wrap=True, horizontalalignment='center', fontsize=12)
+
+    plt.savefig(output_image_path, bbox_inches='tight')
     plt.show()
 
 if __name__ == "__main__":
