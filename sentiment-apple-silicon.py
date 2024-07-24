@@ -1,10 +1,16 @@
 import PyPDF2
-from transformers import pipeline, AutoTokenizer
+from transformers import pipeline, AutoTokenizer, TFAutoModelForSequenceClassification
 import matplotlib.pyplot as plt
 import nltk
+import tensorflow as tf
 
 # Ensure you have the required NLTK data
 nltk.download('punkt')
+
+# Verify that TensorFlow can see the GPU and set the device
+physical_devices = tf.config.list_physical_devices('GPU')
+if physical_devices:
+    tf.config.experimental.set_memory_growth(physical_devices[0], True)
 
 def read_pdf(file_path):
     pdf_reader = PyPDF2.PdfReader(file_path)
@@ -46,7 +52,11 @@ def split_into_chunks(text, max_length=512):
     return chunks
 
 def analyze_sentiment(sections):
-    sentiment_analyzer = pipeline("sentiment-analysis", model="distilbert-base-uncased-finetuned-sst-2-english")
+    model_name = "distilbert-base-uncased-finetuned-sst-2-english"
+    model = TFAutoModelForSequenceClassification.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    sentiment_analyzer = pipeline("sentiment-analysis", model=model, tokenizer=tokenizer, device=0)  # device=0 for Apple Silicon GPU
+
     sentiment_scores = []
     for section in sections:
         chunks = split_into_chunks(section)
@@ -81,7 +91,7 @@ def visualize_sentiment(sentiment_scores, output_image_path):
 if __name__ == "__main__":
     pdf_path = './2025_MandateForLeadership_FULL.pdf'
     output_image_path = 'sentiment_analysis_by_section.png'
-    num_sections = 1000  # Adjust the number of sections as needed
+    num_sections = 10  # Adjust the number of sections as needed
     
     text = read_pdf(pdf_path)
     sections = split_into_sections(text, num_sections)
