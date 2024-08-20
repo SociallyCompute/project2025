@@ -16,7 +16,7 @@ MarkupSafe==2.1.5
 matplotlib==3.9.1
 mpmath==1.3.0
 networkx==3.3
-nltk==3.8.1
+nltk==3.9
 numpy==1.26.4
 packaging==24.1
 pdfreader==0.1.15
